@@ -19,18 +19,11 @@
 {
   projectPermissions(unixGroupName, projectGroupPermissionsList): [
     {
-      user: {
-        name: "anonymous",
-        permissions: [
-          "Overall/Read",
-          "Job/Read"
-        ]
-      }
-    },
-    {
       group: {
         name: "common",
         permissions: [
+          "Overall/Read",
+          "Job/Read",
           "Job/ExtendedRead"
         ]
       }
