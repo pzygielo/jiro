@@ -457,6 +457,15 @@
                   "Overall/SystemRead"
                ]
             }
+         },
+         {
+            "user": {
+               "name": "jakartaee-platform-api-bot@eclipse.org",
+               "permissions": [
+                  "Overall/Read",
+                  "Job/Read"
+               ]
+            }
          }
       ],
       "plugins": [
