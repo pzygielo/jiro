@@ -6,6 +6,7 @@ jenkins:
         ssh:
           credentialsId: "4057f0a8-6a32-4ba5-99d0-b34cdb0505cd"
           host: "40.117.168.25"
+          javaPath: "/opt/java/jdk-21.0.2/bin/java"
           jvmOptions: "-Xmx256m -Xms256m"
           sshHostKeyVerificationStrategy:
             manuallyProvidedKeyVerificationStrategy:
