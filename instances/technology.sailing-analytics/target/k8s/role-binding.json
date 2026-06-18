@@ -1,0 +1,24 @@
+{
+   "apiVersion": "rbac.authorization.k8s.io/v1",
+   "kind": "RoleBinding",
+   "metadata": {
+      "labels": {
+         "org.eclipse.cbi.jiro/project.fullName": "technology.sailing-analytics",
+         "org.eclipse.cbi.jiro/project.shortname": "sailing-analytics"
+      },
+      "name": "sailing-analytics",
+      "namespace": "sailing-analytics"
+   },
+   "roleRef": {
+      "kind": "Role",
+      "name": "jenkins-master-owner",
+      "namespace": "sailing-analytics"
+   },
+   "subjects": [
+      {
+         "kind": "ServiceAccount",
+         "name": "sailing-analytics",
+         "namespace": "sailing-analytics"
+      }
+   ]
+}
