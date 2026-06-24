@@ -120,6 +120,7 @@ data:
                 permissions:
                   - Overall/Read
                   - Job/Read
+                  - Job/ExtendedRead
             - user:
                 name: scott.marlow.opensource@gmail.com
                 permissions:

@@ -457,7 +457,8 @@
                "name": "jakartaee-platform-api-bot@eclipse.org",
                "permissions": [
                   "Overall/Read",
-                  "Job/Read"
+                  "Job/Read",
+                  "Job/ExtendedRead"
                ]
             }
          }

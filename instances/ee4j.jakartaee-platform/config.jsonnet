@@ -19,7 +19,7 @@ local permissionsTemplates = import '../../templates/permissions.libsonnet';
     ],
     permissions+:
       permissionsTemplates.user("scott.marlow.opensource@gmail.com", ["Overall/SystemRead"]) +
-      permissionsTemplates.user("jakartaee-platform-api-bot@eclipse.org", ["Overall/Read", "Job/Read"]),
+      permissionsTemplates.user("jakartaee-platform-api-bot@eclipse.org", ["Overall/Read", "Job/Read", "Job/ExtendedRead"]),
   },
   maven+: {
     showVersion: false,
