@@ -76,6 +76,11 @@ jenkins:
               - Overall/Read
               - Agent/Build
         - user:
+            name: lemmy.nwadishi@eclipse-foundation.org
+            permissions:
+              - Overall/Read
+              - Agent/Build
+        - user:
             name: marco.jahn@eclipse-foundation.org
             permissions:
               - Overall/Read
