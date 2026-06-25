@@ -3,6 +3,11 @@
     fullName: "technology.sailing-analytics",
     displayName: "Eclipse Azimuth Sailing Analytics",
   },
+  jenkins+: {
+    plugins+: [
+      "junit-attachments"
+    ],
+  },
   clouds+: {
     kubernetes+: {
       local currentCloud = self,

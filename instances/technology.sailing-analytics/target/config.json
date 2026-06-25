@@ -488,7 +488,9 @@
             }
          }
       ],
-      "plugins": [ ],
+      "plugins": [
+         "junit-attachments"
+      ],
       "pluginsForceUpgrade": true,
       "staticAgentCount": 0,
       "theme": "quicksilver",
