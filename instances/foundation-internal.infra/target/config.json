@@ -481,6 +481,15 @@
             }
          },
          {
+            "user": {
+               "name": "christian.heissenberger@eclipse-foundation.org",
+               "permissions": [
+                  "Overall/Read",
+                  "Agent/Build"
+               ]
+            }
+         },
+         {
             "group": {
                "name": "foundation-internal.it",
                "permissions": [

@@ -400,6 +400,14 @@
                   "Credentials/Update"
                ]
             }
+         },
+         {
+            "user": {
+               "name": "jhelming@eclipsesource.com",
+               "permissions": [
+                  "Overall/Read"
+               ]
+            }
          }
       ],
       "plugins": [

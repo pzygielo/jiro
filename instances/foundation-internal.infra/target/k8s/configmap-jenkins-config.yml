@@ -94,6 +94,11 @@ data:
                   - Overall/Read
                   - Agent/Build
             - user:
+                name: christian.heissenberger@eclipse-foundation.org
+                permissions:
+                  - Overall/Read
+                  - Agent/Build
+            - user:
                 name: florent.zara@eclipse-foundation.org
                 permissions:
                   - Overall/Read

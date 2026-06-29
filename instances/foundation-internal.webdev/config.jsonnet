@@ -14,7 +14,9 @@ local permissionsTemplates = import '../../templates/permissions.libsonnet';
     staticAgentCount: 8, // fake higher number of staticAgent to increase controller's resources
     permissions+:
       // https://gitlab.eclipse.org/eclipsefdn/infrazilla/-/issues/1571#note_1985722
-      permissionsTemplates.user("martin.lowe@eclipse-foundation.org", ["Credentials/Create", "Credentials/Update"])
+      permissionsTemplates.user("martin.lowe@eclipse-foundation.org", ["Credentials/Create", "Credentials/Update"]) +
+      // https://github.com/eclipsefdn-ai-registry/ai-registry-core/issues/41#issuecomment-4799184356
+      permissionsTemplates.user("jhelming@eclipsesource.com", ["Overall/Read"])
     ,
     plugins+: [
       "disable-failed-job",

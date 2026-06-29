@@ -33,6 +33,8 @@ local permissionsTemplates = import '../../templates/permissions.libsonnet';
       permissionsTemplates.user("thomas.froment@eclipse-foundation.org", ["Overall/Read", "Agent/Build"]) +
       permissionsTemplates.user("charley.mann@eclipse-foundation.org", ["Overall/Read", "Agent/Build"]) +
       permissionsTemplates.user("ana.bukvic@eclipse-foundation.org", ["Overall/Read", "Agent/Build"]) +
+      // https://gitlab.eclipse.org/eclipsefdn/infrazilla/-/work_items/2891
+      permissionsTemplates.user("christian.heissenberger@eclipse-foundation.org", ["Overall/Read", "Agent/Build"]) +
       permissionsTemplates.group("foundation-internal.it", permissionsTemplates.committerPermissionsList)
     ,
     plugins+: [
