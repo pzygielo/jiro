@@ -20,6 +20,15 @@
   projectPermissions(unixGroupName, projectGroupPermissionsList): [
     {
       group: {
+        name: "authenticated",
+        permissions: [
+          "Overall/Read",
+          "Job/Read"
+        ]
+      }
+    },
+    {
+      group: {
         name: "common",
         permissions: [
           "Overall/Read",
