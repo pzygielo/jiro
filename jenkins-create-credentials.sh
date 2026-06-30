@@ -193,45 +193,58 @@ create_ssh_credentials() {
   local id="${2:-}"
   local description="${3:-}"
   local pass_domain="${4:-}"
+  local key_type="${5:-}"
 
   # read credentials from pass
-
-  user="$(passw cbi "/bots/${PROJECT_NAME}/${pass_domain}/username")"
-
   LF_XENTITY="&#xA;"
 
   # TODO: does not seem to work
-  # translate line feeds to LF_XENTITY 
+  # translate line feeds to LF_XENTITY
   #id_rsa=$(passw cbi "${PASSWORD_STORE_DIR}/bots/${PROJECT_NAME}/${pass_domain}/id_rsa" | tr '\n' ',' | sed 's/,/\'${LF_XENTITY}'/g')
 
-  id_rsa="$(passw cbi "/bots/${PROJECT_NAME}/${pass_domain}/id_rsa")"
+  if [[ -z "${key_type}" ]]; then
+    echo "SSH private key type was not given. Testing..."
+    if [[ -f "${PASSWORD_STORE_DIR}/bots/${PROJECT_NAME}/${pass_domain}/id_rsa.gpg" ]]; then
+      echo "  Found RSA key."
+      key_type="rsa"
+    elif [[ -f "${PASSWORD_STORE_DIR}/bots/${PROJECT_NAME}/${pass_domain}/id_ed25519.gpg" ]]; then
+      echo "  Found ed25519 key."
+      key_type="ed25519"
+    else
+      echo "  Found no SSH credentials for ${PROJECT_NAME}/${pass_domain}. Skipping..."
+      return
+    fi
+  else
+    echo "SSH private key type ${key_type} was given."
+  fi
+
+  user="$(passw cbi "/bots/${PROJECT_NAME}/${pass_domain}/username")"
+  id_private="$(passw cbi "/bots/${PROJECT_NAME}/${pass_domain}/id_${key_type}")"
+  if [[ -z "${id_private}" ]]; then
+    echo "SSH private key ${key_type} was not found."
+    return
+  fi
 
   # remove trailing line feed (already translated to LF_XENTITY)
-  if [ "$(echo "${id_rsa}" | wc -c)" -ne 0 ] && [ "$(echo "${id_rsa}" | tail -c -6)" == "${LF_XENTITY}" ]; then
-    id_rsa="$(echo "${id_rsa}" | head -c -6)"
+  if [ "$(echo "${id_private}" | wc -c)" -ne 0 ] && [ "$(echo "${id_private}" | tail -c -6)" == "${LF_XENTITY}" ]; then
+    id_private="$(echo "${id_private}" | head -c -6)"
   fi
 
   # escape XML special chars (<, >, &, ", and ' to their matching entities)
-  passphrase="$(passw cbi "/bots/${PROJECT_NAME}/${pass_domain}/id_rsa.passphrase" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g')"
-  create_ssh_credentials_xml "${domain_name}" "${id}" "${user}" "${id_rsa}" "${passphrase}" "${description}"
+  passphrase="$(passw cbi "/bots/${PROJECT_NAME}/${pass_domain}/id_${key_type}.passphrase" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g')"
+  create_ssh_credentials_xml "${domain_name}" "${id}" "${user}" "${id_private}" "${passphrase}" "${description}"
 }
 
 
 
 
 ## projects-storage.eclipse.org ##
-if [[ -f "${PASSWORD_STORE_DIR}/bots/${PROJECT_NAME}/${PROJECTS_STORAGE_PASS_DOMAIN}/id_rsa.gpg" ]]; then
-  echo "Found ${PROJECTS_STORAGE_PASS_DOMAIN} SSH credentials in password store..."
-  create_ssh_credentials "_" "projects-storage.eclipse.org-bot-ssh" "ssh://genie.${SHORT_NAME}@projects-storage.eclipse.org" "${PROJECTS_STORAGE_PASS_DOMAIN}"
-fi
+create_ssh_credentials "_" "projects-storage.eclipse.org-bot-ssh" "ssh://genie.${SHORT_NAME}@projects-storage.eclipse.org" "${PROJECTS_STORAGE_PASS_DOMAIN}"
 
 ## git.eclipse.org ##
 
 # always create by default ?
-if [[ -f "${PASSWORD_STORE_DIR}/bots/${PROJECT_NAME}/${GIT_ECLIPSE_PASS_DOMAIN}/id_rsa.gpg" ]]; then
-  echo "Found ${GIT_ECLIPSE_PASS_DOMAIN} SSH credentials in password store..."
-  create_ssh_credentials "_" "git.eclipse.org-bot-ssh" "ssh://genie.${SHORT_NAME}@git.eclipse.org" "${GIT_ECLIPSE_PASS_DOMAIN}"
-fi
+create_ssh_credentials "_" "git.eclipse.org-bot-ssh" "ssh://genie.${SHORT_NAME}@git.eclipse.org" "${GIT_ECLIPSE_PASS_DOMAIN}"
 
 ## GitHub.com ##
 
@@ -242,19 +255,15 @@ if [[ -f "${PASSWORD_STORE_DIR}/bots/${PROJECT_NAME}/${GITHUB_PASS_DOMAIN}/api-t
   user="$(passw cbi "/bots/${PROJECT_NAME}/${GITHUB_PASS_DOMAIN}/username")"
   token="$(passw cbi "/bots/${PROJECT_NAME}/${GITHUB_PASS_DOMAIN}/api-token")"
   create_username_password_credentials "api.github.com" "github-bot" "${user}" "${token}" "GitHub bot (username/token)"
+else
+  echo "No GitHub bot credentials found in password store. Skipping..."
 fi
 
-if [[ -f "${PASSWORD_STORE_DIR}/bots/${PROJECT_NAME}/${GITHUB_PASS_DOMAIN}/id_rsa.gpg" ]]; then
-  echo "Found ${GITHUB_PASS_DOMAIN} SSH credentials in password store..."
-  create_ssh_credentials "api.github.com" "github-bot-ssh" "GitHub bot (SSH)" "${GITHUB_PASS_DOMAIN}"
-fi
+create_ssh_credentials "api.github.com" "github-bot-ssh" "GitHub bot (SSH)" "${GITHUB_PASS_DOMAIN}"
 
 ## GitLab ##
 
-if [[ -f "${PASSWORD_STORE_DIR}/bots/${PROJECT_NAME}/${GITLAB_PASS_DOMAIN}/id_rsa.gpg" ]]; then
-  echo "Found ${GITLAB_PASS_DOMAIN} SSH credentials in password store..."
-  create_ssh_credentials "gitlab.eclipse.org" "gitlab-bot-ssh" "GitLab bot (SSH)" "${GITLAB_PASS_DOMAIN}"
-fi
+create_ssh_credentials "gitlab.eclipse.org" "gitlab-bot-ssh" "GitLab bot (SSH)" "${GITLAB_PASS_DOMAIN}"
 
 ## GPG (for OSSRH) ##
 
@@ -263,6 +272,8 @@ if [[ -f "${PASSWORD_STORE_DIR}/bots/${PROJECT_NAME}/${GPG_PASS_DOMAIN}/secret-s
   # read credentials from pass
   subkeys="$(passw cbi "/bots/${PROJECT_NAME}/${GPG_PASS_DOMAIN}/secret-subkeys.asc")"
   create_file_credentials "_" "secret-subkeys.asc" "secret-subkeys.asc" "${subkeys}" # id == filename
+else
+  echo "No PGP credentials found in password store. Skipping..."
 fi
 
 
